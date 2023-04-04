@@ -1,6 +1,8 @@
 module Chapter1.Exercises where
 
-open import Data.Data
+open import Data.Prod
+open import Data.Sum
+open import Data.Logic
 
 --- ex 1.11 ---
 DNI : ∀{A : Set} → A → ¬ ¬ A
