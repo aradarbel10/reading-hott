@@ -15,14 +15,8 @@ ex1-11 ¬¬¬a a = ¬¬¬a (DNI a)
 ex1-13 : ∀{P : Set} →
   ¬ (¬ (P + (¬ P)))
 ex1-13 e =
-  let (¬p , ¬¬p) = lemma e in
+  let (¬p , ¬¬p) = distr-¬-over-+ e in
   ¬¬p ¬p
-  
-  where
-  lemma : ∀{A B} →
-    ¬ (A + B) → ((¬ A) × (¬ B))
-  lemma f = ((λ a → f (inl a)) , λ b → f (inr b))
-
 
 ex1-13′ : ∀{P : Set} →
   ¬ (¬ (P + (¬ P)))
