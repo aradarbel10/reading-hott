@@ -12,8 +12,27 @@ variable
   B : Set
   X : Set
 
-ex1-9 : (A + B → X) ≃ (A → X) × (B → X)
-ex1-9 = fwd , bwd , fwd-bwd , bwd-fwd
+ex2-6 : (x y z : A) (p : x ≡ y) → is-equiv (λ(q : y ≡ z) → trans p q)
+ex2-6 x y z p = trans (sym p) , pp⁻¹q , p⁻¹pq
+  where
+  pp⁻¹q : ∀(q) → p ∙ (sym p ∙ q) ≡ q
+  pp⁻¹q q = begin
+    p ∙ (sym p ∙ q)       ≡[ sym (trans-assoc _ _ _) ]
+    (p ∙ sym p) ∙ q       ≡[ cong (_∙ q) (trans-sym _) ]
+    refl ∙ q              ≡[ refl-trans _ ]
+    q                     ∎
+  
+  p⁻¹pq : ∀(q) → sym p ∙ (p ∙ q) ≡ q
+  p⁻¹pq q = begin
+    sym p ∙ (p ∙ q)       ≡[ sym (trans-assoc _ _ _) ]
+    (sym p ∙ p) ∙ q       ≡[ cong (_∙ q) (sym-trans _) ]
+    refl ∙ q              ≡[ refl-trans _ ]
+    q                     ∎
+
+  
+
+ex2-9 : (A + B → X) ≃ (A → X) × (B → X)
+ex2-9 = fwd , bwd , fwd-bwd , bwd-fwd
   where
   fwd : (A + B → X) → (A → X) × (B → X)
   fwd h = (h ∘ inl) , (h ∘ inr)
