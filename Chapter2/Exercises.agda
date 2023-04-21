@@ -8,8 +8,8 @@ open import Data.Function
 postulate funext : {A B : Set} {f g : A → B} → (∀(x) → f x ≡ g x) → f ≡ g
 
 variable
-  A : Set
-  B : Set
+  A A′ : Set
+  B B′ : Set
   X : Set
 
 ex2-6 : (x y z : A) (p : x ≡ y) → is-equiv (λ(q : y ≡ z) → trans p q)
@@ -57,3 +57,22 @@ ex2-9 = fwd , bwd , fwd-bwd , bwd-fwd
     ≡[ funext pointwise ]
       h
     ∎
+
+
+ex2-17-i : (A ≃ A′) → (B ≃ B′) → (A × B) ≃ (A′ × B′)
+ex2-17-i {A = A} {A′ = A′} {B = B} {B′ = B′}
+  (fwdA , bwdA , fbA , bfA) (fwdB , bwdB , fbB , bfB) =
+    fwd , bwd , fwd-bwd , bwd-fwd
+
+  where
+  fwd : A × B → A′ × B′
+  fwd (a , b) = fwdA a , fwdB b
+
+  bwd : A′ × B′ → A × B
+  bwd (a′ , b′) = bwdA a′ , bwdB b′
+
+  fwd-bwd : (x : A′ × B′) → fwd (bwd x) ≡ x
+  fwd-bwd (a′ , b′) = eq-, (fbA a′) (fbB b′)
+
+  bwd-fwd : (x : A × B) → bwd (fwd x) ≡ x
+  bwd-fwd (a , b) = eq-, (bfA a) (bfB b)

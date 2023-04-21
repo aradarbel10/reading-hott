@@ -1,5 +1,8 @@
 module Data.Function where
 
+_$_ : {A B : Set} → (A → B) → A → B
+f $ x = f x
+
 id : {A : Set} → A → A
 id a = a
 

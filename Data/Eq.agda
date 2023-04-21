@@ -19,6 +19,10 @@ _∙_ = trans
 cong : ∀ {A B : Set} (f : A → B) {x y : A} → x ≡ y → f x ≡ f y
 cong f refl = refl
 
+ap2 : ∀ {A B C : Set} → (f : A → B → C) {a₁ a₂ : A} {b₁ b₂ : B} →
+  a₁ ≡ a₂ → b₁ ≡ b₂ → f a₁ b₁ ≡ f a₂ b₂
+ap2 f refl refl = refl
+
 --- equational reasoning ---
 infix 1 begin_
 infixr 2 _≡[_]_ _≡[]_
@@ -70,6 +74,11 @@ _∙l_ refl {r = r} {s = s} β = refl-trans r ∙ β ∙ sym (refl-trans s)
 _∗_ : ∀{A : Set} {x y z : A} {p q : x ≡ y} {r s : y ≡ z} (α : p ≡ q) (β : r ≡ s) → p ∙ r ≡ q ∙ s
 _∗_ {q = q} {r = r} α β = (α ∙r r) ∙ (q ∙l β)
 
+
+--- characterization in products ---
+eq-, : {A B : Set} {a a′ : A} {b b′ : B} →
+  a ≡ a′ → b ≡ b′ → (a , b) ≡ (a′ , b′)
+eq-, = ap2 _,_
 
 --- homotopy ---
 _~_ : {A B : Set} (f g : A → B) → Set
