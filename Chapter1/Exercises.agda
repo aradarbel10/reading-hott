@@ -2,7 +2,7 @@ module Chapter1.Exercises where
 
 open import Data.Prod
 open import Data.Sum
-open import Data.Logic
+open import Data.Units
 
 --- ex 1.11 ---
 DNI : ∀{A : Set} → A → ¬ ¬ A

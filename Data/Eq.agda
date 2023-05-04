@@ -2,6 +2,7 @@ module Data.Eq where
 
 open import Data.Prod
 open import Data.Function
+open import Data.Units
 
 infix 4 _≡_
 data _≡_ {A : Set} (x : A) : A → Set where
@@ -9,6 +10,8 @@ data _≡_ {A : Set} (x : A) : A → Set where
 
 sym : ∀ {A : Set} {x y : A} → x ≡ y → y ≡ x
 sym refl = refl
+
+syntax sym p = p ⁻¹
 
 trans : ∀ {A : Set} {x y z : A} → x ≡ y → y ≡ z → x ≡ z
 trans refl refl = refl
@@ -35,7 +38,7 @@ _≡[_]_ : ∀{A : Set} → (x : A) → {y z : A} → x ≡ y → y ≡ z → x 
 x ≡[ p ] q = p ∙ q
 
 _≡[]_ : ∀{A : Set} → (x : A) → x ≡ x → x ≡ x
-x ≡[] p = p
+x ≡[] p = x ≡[ refl ] p
 
 _∎ : ∀{A : Set} (x : A) → x ≡ x
 x ∎ = refl
@@ -60,20 +63,9 @@ trans-assoc : ∀{A : Set} {w x y z : A} (p : w ≡ x) (q : x ≡ y) (r : y ≡ 
   → (p ∙ q) ∙ r ≡ p ∙ (q ∙ r)
 trans-assoc refl refl refl = refl
 
---- whiskering ---
-infixl 17 _∙r_
-infixl 17 _∙l_
-infixl 18 _∗_
 
-_∙r_ : ∀{A : Set} {x y z : A} {p q : x ≡ y} (α : p ≡ q) (r : y ≡ z) → p ∙ r ≡ q ∙ r
-_∙r_ {p = p} {q = q} α refl = trans-refl p ∙ α ∙ sym (trans-refl q)
-
-_∙l_ : ∀{A : Set} {x y z : A} (p : x ≡ y) {r s : y ≡ z} (β : r ≡ s) → p ∙ r ≡ p ∙ s
-_∙l_ refl {r = r} {s = s} β = refl-trans r ∙ β ∙ sym (refl-trans s)
-
-_∗_ : ∀{A : Set} {x y z : A} {p q : x ≡ y} {r s : y ≡ z} (α : p ≡ q) (β : r ≡ s) → p ∙ r ≡ q ∙ s
-_∗_ {q = q} {r = r} α β = (α ∙r r) ∙ (q ∙l β)
-
+--- funext ---
+postulate funext : {A B : Set} {f g : A → B} → (∀(x) → f x ≡ g x) → f ≡ g
 
 --- characterization in products ---
 eq-, : {A B : Set} {a a′ : A} {b b′ : B} →
@@ -85,9 +77,41 @@ _~_ : {A B : Set} (f g : A → B) → Set
 f ~ g = ∀(x) → f x ≡ g x
 
 --- equivalence ---
-is-equiv : {A B : Set} → (f : A → B) → Set
-is-equiv {A} {B} f = Σ[ g ∈ (B → A) ] ((f ∘ g ~ id) × (g ∘ f ~ id))
+record is-equiv {A B : Set} (fwd : A → B) : Set where
+  constructor an-is-equiv
+  field
+    bwd : B → A
+    fwd∘bwd : fwd ∘ bwd ~ id
+    bwd∘fwd : bwd ∘ fwd ~ id
+open is-equiv {{...}} public
 
 infix 18 _≃_
-_≃_ : (A B : Set) → Set
-A ≃ B = Σ[ f ∈ (A → B) ] (is-equiv f) 
+record _≃_ (A B : Set) : Set where
+  field
+    fwd : A → B
+    {{fwd-is-equiv}} : is-equiv fwd
+
+pattern an-equiv f b fb bf = record { fwd = f; fwd-is-equiv = record { bwd = b; bwd∘fwd = bf; fwd∘bwd = fb } }
+
+--- hsets ---
+record is-set (A : Set) : Set where
+  field
+    uip : ∀(x y : A) (p q : x ≡ y) → p ≡ q
+open is-set {{...}} public
+
+instance
+  ⊤-is-set : is-set ⊤
+  uip ⦃ ⊤-is-set ⦄ ⋆ ⋆ refl refl = refl
+
+  ⊥-is-set : is-set ⊥
+  uip ⦃ ⊥-is-set ⦄ x y p q = ex-falso x
+
+
+record is-1-type (A : Set) : Set where
+  field
+    path-of-paths : ∀(x y : A) (p q : x ≡ y) (r s : p ≡ q) → r ≡ s
+open is-1-type {{...}} public
+
+-- instance
+--   set→1-type : ∀{A : Set} {{_ : is-set A}} → is-1-type A
+--   path-of-paths ⦃ set→1-type {A} ⦄ x .x refl = _

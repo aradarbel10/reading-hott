@@ -45,3 +45,8 @@ instance
 
   additive-monoid-ℕ : Monoid ℕ
   additive-monoid-ℕ = record { left-unit = zero-+; right-unit = +-zero }
+
+
+instance
+  ℕ-is-set : is-set ℕ
+  uip ⦃ ℕ-is-set ⦄ x .x refl refl = refl
