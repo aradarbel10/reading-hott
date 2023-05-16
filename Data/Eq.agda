@@ -28,7 +28,7 @@ ap2 f refl refl = refl
 
 --- equational reasoning ---
 infix 1 begin_
-infixr 2 _≡[_]_ _≡[]_
+infixr 2 _≡[_]_ _̌≡[_]_ _≡[]_
 infix 3 _∎
 
 begin_ : ∀{A : Set} {x y : A} → x ≡ y → x ≡ y
@@ -36,6 +36,9 @@ begin p = p
 
 _≡[_]_ : ∀{A : Set} → (x : A) → {y z : A} → x ≡ y → y ≡ z → x ≡ z
 x ≡[ p ] q = p ∙ q
+
+_̌≡[_]_ : ∀{A : Set} → (x : A) → {y z : A} → y ≡ x → y ≡ z → x ≡ z
+x ̌≡[ p ] q = sym p ∙ q
 
 _≡[]_ : ∀{A : Set} → (x : A) → x ≡ x → x ≡ x
 x ≡[] p = x ≡[ refl ] p
@@ -98,6 +101,9 @@ record is-set (A : Set) : Set where
   field
     uip : ∀(x y : A) (p q : x ≡ y) → p ≡ q
 open is-set {{...}} public
+
+is-prop : ∀(A : Set) → Set
+is-prop A = ∀(x y : A) → x ≡ y
 
 instance
   ⊤-is-set : is-set ⊤
