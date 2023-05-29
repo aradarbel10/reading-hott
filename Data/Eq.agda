@@ -1,3 +1,5 @@
+{-# OPTIONS --type-in-type #-}
+
 module Data.Eq where
 
 open import Data.Prod
@@ -5,13 +7,15 @@ open import Data.Function
 open import Data.Units
 
 infix 4 _≡_
-data _≡_ {A : Set} (x : A) : A → Set where
-    refl : x ≡ x
+data _≡_ {A : Set} : A → A → Set where
+  refl : {x : A} → x ≡ x
 
-sym : ∀ {A : Set} {x y : A} → x ≡ y → y ≡ x
+
+sym : ∀{A : Set} {x y : A} → x ≡ y → y ≡ x
 sym refl = refl
 
-syntax sym p = p ⁻¹
+_⁻¹ = sym
+
 
 trans : ∀ {A : Set} {x y z : A} → x ≡ y → y ≡ z → x ≡ z
 trans refl refl = refl
@@ -19,8 +23,9 @@ trans refl refl = refl
 infixl 20 _∙_
 _∙_ = trans
 
-cong : ∀ {A B : Set} (f : A → B) {x y : A} → x ≡ y → f x ≡ f y
-cong f refl = refl
+
+ap : ∀ {A B : Set} (f : A → B) {x y : A} → x ≡ y → f x ≡ f y
+ap f refl = refl
 
 ap2 : ∀ {A B C : Set} → (f : A → B → C) {a₁ a₂ : A} {b₁ b₂ : B} →
   a₁ ≡ a₂ → b₁ ≡ b₂ → f a₁ b₁ ≡ f a₂ b₂
@@ -47,7 +52,7 @@ _∎ : ∀{A : Set} (x : A) → x ≡ x
 x ∎ = refl
 
 --- properties ---
-trans-refl : ∀{A : Set} {x y : A} (p : x ≡ y) → trans p refl ≡ p
+trans-refl : ∀{A : Set} {x y : A} (p : x ≡ y) → p ∙ refl ≡ p
 trans-refl refl = refl
 
 refl-trans : ∀{A : Set} {x y : A} (p : x ≡ y) → trans refl p ≡ p
@@ -120,4 +125,4 @@ open is-1-type {{...}} public
 
 -- instance
 --   set→1-type : ∀{A : Set} {{_ : is-set A}} → is-1-type A
---   path-of-paths ⦃ set→1-type {A} ⦄ x .x refl = _
+--   path-of-paths ⦃ set→1-type {A} ⦄ x .x refl = _ 

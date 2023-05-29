@@ -2,6 +2,13 @@ module Data.Algebra where
 
 open import Data.Eq
 
+--- binary operator properties ---
+record Comm {A : Set} (_⊙_ : A → A → A) : Set where
+  field
+    comm : ∀(x y : A) → x ⊙ y ≡ y ⊙ x
+open Comm {{...}} public
+
+--- algebraic structures ---
 record Pointed (A : Set) : Set where
   field
     𝟎 : A

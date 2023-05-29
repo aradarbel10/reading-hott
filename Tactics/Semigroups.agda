@@ -24,7 +24,7 @@ _++_ : Nf → Nf → Nf
 
 ++-assoc : ∀(xs ys zs : Nf) → (xs ++ ys) ++ zs ≡ xs ++ (ys ++ zs)
 ++-assoc [ x ] ys zs = refl
-++-assoc (x ∷ xs) ys zs = cong (x ∷_) (++-assoc xs ys zs)
+++-assoc (x ∷ xs) ys zs = ap (x ∷_) (++-assoc xs ys zs)
 
 -- evaluate into a normal form
 eval : Expr → Nf
@@ -42,7 +42,7 @@ nf = reflect ∘ eval
 reflect-++ : ∀(n₁ n₂ : Nf) → reflect (n₁ ++ n₂) ≡ reflect n₁ ⊙ reflect n₂
 reflect-++ [ x ] n = refl
 reflect-++ (x ∷ n₁) n₂ = begin
-  (x ⊙ (reflect (n₁ ++ n₂)))           ≡[ cong (x ⊙_) (reflect-++ n₁ n₂) ]
+  (x ⊙ (reflect (n₁ ++ n₂)))           ≡[ ap (x ⊙_) (reflect-++ n₁ n₂) ]
   (x ⊙ (reflect n₁ ⊙ reflect n₂))     ≡[ sym (assoc _ _ _) ]
   ((x ⊙ reflect n₁) ⊙ reflect n₂)     ∎
 
@@ -62,7 +62,7 @@ sound ((x ↑) ‵⊙ e) = nf-↑-‵⊙ ∙ ⊙-reflect-eval ∙ sym embed-↑-
     x ⊙ reflect (eval e)           ∎
 
   ⊙-reflect-eval : x ⊙ reflect (eval e) ≡ x ⊙ embed e
-  ⊙-reflect-eval = cong (x ⊙_) (sound e)
+  ⊙-reflect-eval = ap (x ⊙_) (sound e)
 
   embed-↑-‵⊙ : embed ((x ↑) ‵⊙ e) ≡ x ⊙ embed e
   embed-↑-‵⊙ = begin
@@ -78,11 +78,11 @@ sound ((e₁ ‵⊙ e₂) ‵⊙ e₃) = nf-‵⊙ ∙ reflect-eval-⊙ ∙ embe
     reflect (eval (e₁ ‵⊙ e₂) ++ eval e₃)
       ≡[ refl ]
     reflect ((eval e₁ ++ eval e₂) ++ eval e₃)
-      ≡[ cong reflect (++-assoc (eval e₁) (eval e₂) (eval e₃)) ]
+      ≡[ ap reflect (++-assoc (eval e₁) (eval e₂) (eval e₃)) ]
     reflect (eval e₁ ++ (eval e₂ ++ eval e₃))
       ≡[ reflect-++ (eval e₁) (eval e₂ ++ eval e₃) ]
     reflect (eval e₁) ⊙ reflect (eval e₂ ++ eval e₃)
-      ≡[ cong (_ ⊙_) (reflect-++ (eval e₂) (eval e₃)) ]
+      ≡[ ap (_ ⊙_) (reflect-++ (eval e₂) (eval e₃)) ]
     (reflect (eval e₁) ⊙ (reflect (eval e₂) ⊙ reflect (eval e₃)))
       ≡[ sym (assoc _ _ _) ]
     ((reflect (eval e₁) ⊙ reflect (eval e₂)) ⊙ reflect (eval e₃))

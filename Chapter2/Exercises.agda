@@ -16,14 +16,14 @@ ex2-6 x y z p = an-is-equiv (trans (sym p)) pp⁻¹q p⁻¹pq
   pp⁻¹q : ∀(q) → p ∙ (sym p ∙ q) ≡ q
   pp⁻¹q q = begin
     p ∙ (sym p ∙ q)       ≡[ sym (trans-assoc _ _ _) ]
-    (p ∙ sym p) ∙ q       ≡[ cong (_∙ q) (trans-sym _) ]
+    (p ∙ sym p) ∙ q       ≡[ ap (_∙ q) (trans-sym _) ]
     refl ∙ q              ≡[ refl-trans _ ]
     q                     ∎
   
   p⁻¹pq : ∀(q) → sym p ∙ (p ∙ q) ≡ q
   p⁻¹pq q = begin
     sym p ∙ (p ∙ q)       ≡[ sym (trans-assoc _ _ _) ]
-    (sym p ∙ p) ∙ q       ≡[ cong (_∙ q) (sym-trans _) ]
+    (sym p ∙ p) ∙ q       ≡[ ap (_∙ q) (sym-trans _) ]
     refl ∙ q              ≡[ refl-trans _ ]
     q                     ∎
   
