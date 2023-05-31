@@ -9,8 +9,8 @@ module _ {A B : Set} where
   code : A + B → A + B → Set
   code (inl a) (inl a′) = a ≡ a′
   code (inr b) (inr b′) = b ≡ b′
-  code (inl a) (inr b) = ⊥
-  code (inr b) (inl a) = ⊥
+  code (inl a) (inr b) = 𝟘
+  code (inr b) (inl a) = 𝟘
 
   code-faithful : ∀(w w′ : A + B) → code w w′ ≃ (w ≡ w′)
   code-faithful w w′ = an-equiv (decode w w′) (encode w w′) (f∘g w w′) (g∘f w w′)

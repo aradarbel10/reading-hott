@@ -119,11 +119,11 @@ is-prop : ∀(A : Set) → Set
 is-prop A = ∀(x y : A) → x ≡ y
 
 instance
-  ⊤-is-set : is-set ⊤
-  uip ⦃ ⊤-is-set ⦄ ⋆ ⋆ refl refl = refl
+  𝟙-is-set : is-set 𝟙
+  uip ⦃ 𝟙-is-set ⦄ ⋆ ⋆ refl refl = refl
 
-  ⊥-is-set : is-set ⊥
-  uip ⦃ ⊥-is-set ⦄ x y p q = ex-falso x
+  𝟘-is-set : is-set 𝟘
+  uip ⦃ 𝟘-is-set ⦄ x y p q = ex-falso x
 
 
 record is-1-type (A : Set) : Set where
