@@ -72,3 +72,21 @@ ex2-17-i {A = A} {A′ = A′} {B = B} {B′ = B′}
 
   bf : (x : A × B) → b (f x) ≡ x
   bf (a , b) = eq-, (bfA a) (bfB b)
+
+
+-- characterizing equalities in Sigma types
+Σ-eq : ∀(A : Set) (P : A → Set) (w w′ : Σ[ x ∈ A ] P x)
+  → (w ≡ w′) ≃ Σ[ p ∈ proj₁ w ≡ proj₁ w′ ] (transp P p (proj₂ w) ≡ proj₂ w′)
+Σ-eq A P w w′ = an-equiv f g f∘g g∘f
+  where
+  f : (w ≡ w′) → Σ[ p ∈ proj₁ w ≡ proj₁ w′ ] (transp P p (proj₂ w) ≡ proj₂ w′)
+  f refl = refl , refl
+
+  g : Σ[ p ∈ proj₁ w ≡ proj₁ w′ ] (transp P p (proj₂ w) ≡ proj₂ w′) → (w ≡ w′)
+  g (refl , refl) = refl
+
+  f∘g : f ∘ g ~ id
+  f∘g (refl , refl) = refl
+
+  g∘f : g ∘ f ~ id
+  g∘f refl = refl

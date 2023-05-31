@@ -101,6 +101,14 @@ record _≃_ (A B : Set) : Set where
 
 pattern an-equiv f b fb bf = record { fwd = f; fwd-is-equiv = record { bwd = b; bwd∘fwd = bf; fwd∘bwd = fb } }
 
+--- transport ---
+transp : ∀{A : Set} {x y : A} (P : A → Set) → x ≡ y → (P x → P y)
+transp P refl = id
+
+transp-is-equiv : ∀(A : Set) (x y : A) (P : A → Set) (p : x ≡ y)
+  → is-equiv (transp P p)
+transp-is-equiv A x x P refl = an-is-equiv id (λ a → refl) (λ a → refl)
+
 --- hsets ---
 record is-set (A : Set) : Set where
   field
