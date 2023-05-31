@@ -30,3 +30,31 @@ module _ {A B : Set} where
     g∘f : ∀(w w′ : A + B) → encode w w′ ∘ decode w w′ ~ id
     g∘f (inl a) (inl a) refl = refl
     g∘f (inr b) (inr b) refl = refl
+
+-- as a corollary, we can prove tt ‌/≡ ff
+open import Data.Bool
+
+𝟙+𝟙≃𝟚 : 𝟙 + 𝟙 ≃ 𝟚
+𝟙+𝟙≃𝟚 = an-equiv f g f∘g g∘f
+  where
+  f : 𝟙 + 𝟙 → 𝟚
+  f (inl ⋆) = tt
+  f (inr ⋆) = ff
+
+  g : 𝟚 → 𝟙 + 𝟙
+  g tt = inl ⋆
+  g ff = inr ⋆
+
+  f∘g : f ∘ g ~ id
+  f∘g tt = refl
+  f∘g ff = refl
+
+  g∘f : g ∘ f ~ id
+  g∘f (inl ⋆) = refl
+  g∘f (inr ⋆) = refl
+
+tt/≡ff : ¬ (tt ≡ ff)
+tt/≡ff tt≡ff =
+  let inl≡inr = ap (𝟙+𝟙≃𝟚 ._≃_.fwd-is-equiv .is-equiv.bwd) tt≡ff in
+  let code-inl-inr = (code-faithful (inl ⋆) (inr ⋆)) ._≃_.fwd-is-equiv .is-equiv.bwd inl≡inr in
+  code-inl-inr
